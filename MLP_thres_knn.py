@@ -1,3 +1,14 @@
+# This code is for keywordspotting using MLP. Three cases are considered for the dataset: 
+#1. Testing using known keywords (a subset of training dataset), 
+#2. Testing using unknown keywords, and 
+#3. Testing using rhyming keywords.
+
+#Case - 1: Testing for the known keywords: Take X,Y and use the train_test_split function in the code to get the training and testing datasets
+#Case - 2: Use X_train and Y_train from the code as the training dataset and 
+#          use X_test and Y_test with X_test_5_files_each_class.npy and Y_test_5_files_each_class.npy as the testing dataset
+#Case - 3: Use X_train and Y_train from the code as the training dataset and 
+#          use X_test and Y_test with X_rhyming_word.npy and Y_rhyming_word.npy as the testing dataset         
+
 seed_value= 0
 
 # 1. Set the `PYTHONHASHSEED` environment variable at a fixed value
@@ -84,37 +95,19 @@ print("shape of Y_train is:",Y_train.shape)
 # print("shape of Y_Val is:",Y_val.shape)
 print("shape of Y_Test is:", Y_test.shape)
 
-
-# def build_model2(hp):
-#       model = tf.keras.Sequential()
-#       # model.add(Flatten())
-#       for i in range(hp.Int('layers', 1, 3)):
-#           model.add(tf.keras.layers.Dense(units=hp.Int('units_' + str(i), 32, 512, step=32), 
-#                                           activation = hp.Choice('act_' + str(i), ['relu', 'sigmoid','tanh'])))
-#       model.add(Flatten())
-#       model.add(layers.Dense(5, activation='softmax'))
-#       learning_rate = hp.Float("lr", min_value=1e-4, max_value=1e-2, sampling="log")
-#       model.compile(keras.optimizers.Adam(learning_rate=learning_rate), loss = 'categorical_crossentropy', metrics = ['accuracy'])
-#       return model
-
 num_labels = Y_train.shape[1]
 
 model = Sequential()
 
 model.add(Dense(480, activation='relu'))
-# model.add(Dense(96, activation='sigmoid'))
-# model.add(Dense(192, activation='sigmoid'))
 
 model.add(Flatten())
-
 
 model.add(Dense(num_labels, activation='softmax'))
 
 opt = Adam(learning_rate=0.0009670460155053197)
-# opt = Adam(learning_rate=0.0038766201319368806)
 
 model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer=opt)
-
 
 score = model.evaluate(X_test, Y_test, verbose=1)
 accuracy = 100*score[1]
@@ -126,7 +119,7 @@ history=model.fit(X_train, Y_train, batch_size=num_batch_size, epochs=num_epochs
 
 model.summary()
 
-##for visualization of the model, use the following code
+##for visualization of the model, use the following code-----
 # import visualkeras
 # from PIL import ImageFont
 
@@ -268,24 +261,25 @@ plt.title("ROC for MLP")
 plt.legend(loc="lower right")
 plt.show()
 
-  # # Defining the threshold value for comparing each column
+# Thresholding method is only used for the known keywords i.e. Case - 1
+# # Defining the threshold value for comparing each column
+#The thresh_vals are obtained from the RoC plot and it changes everytime so you will have to use whatever value you are getting from your RoC plot
 
+thresh_vals = np.array([0.5643991, 0.13516375, 0.42182505, 0.89806145, 0.121829145])
+m_thresh = np.repeat(thresh_vals.reshape(1,5), 28, axis=0)
 
-# thresh_vals = np.array([0.5643991, 0.13516375, 0.42182505, 0.89806145, 0.121829145])
-# m_thresh = np.repeat(thresh_vals.reshape(1,5), 28, axis=0)
+rep_vals = np.array(['0', '0', '0', '0', '0'])
+m_rep = np.repeat(rep_vals.reshape(1,5), 28, axis=0)
 
-# rep_vals = np.array(['0', '0', '0', '0', '0'])
-# m_rep = np.repeat(rep_vals.reshape(1,5), 28, axis=0)
+mask = Y_pred < thresh_vals
+Y_pred[mask] = m_rep[mask]
+print('After thresholding:', Y_pred)
 
-# mask = Y_pred < thresh_vals
-# Y_pred[mask] = m_rep[mask]
-# print('After thresholding:', Y_pred)
+result = np.where(np.amax(Y_pred,axis=-1), np.argmax(Y_pred, axis=-1), '6')
+result= result.astype(np.int64)
+print("Thresholding result:",result)
 
-# result = np.where(np.amax(Y_pred,axis=-1), np.argmax(Y_pred, axis=-1), '6')
-# result= result.astype(np.int64)
-# print("Thresholding result:",result)
-
-# ###for knn
+# ###for KNN ----
 # X_test = X_test.reshape(28,3168)
 # X_train = X_train.reshape(219, 3168)
 # from sklearn.neighbors import KNeighborsClassifier
@@ -306,52 +300,26 @@ plt.show()
   
 # print("Knn result:",predictions)
 # # print(predictions.shape)
-# aaa=np.argmax(Y_test,axis=-1)
-# print("original Y_test is:", aaa)
 
+aaa=np.argmax(Y_test,axis=-1)
+#print("original Y_test is:", aaa)
 
-# # #compares the result of the thresholding method and the scatterplot
-# # for i, j,k in zip(result,predictions, aaa):
-# #       if i == j and j ==k:
-# #           result = k
-# #           print("The predicted class is:", result)
-# #       else:
-# #           print("The predicted class is: Mismatch")
 
 # # #For printing confusion matrix
-# from sklearn.metrics import confusion_matrix
-# cm = confusion_matrix(aaa,result)
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(aaa,result)
 # cm1 = confusion_matrix(aaa,predictions)
-# print(cm)
+print(cm)
 # print(cm1)
 
-# ###for printing the confusion matrix
-# # fig, ax = plt.subplots(figsize=(5, 5))
-# # ax.matshow(cm, cmap=plt.cm.Oranges, alpha=0.3)
-# # for i in range(cm.shape[0]):
-# #     for j in range(cm.shape[1]):
-# #         ax.text(x=j, y=i,s=cm[i, j], va='center', ha='center', size='xx-large')
- 
-# # plt.xlabel('Predictions', fontsize=18)
-# # plt.ylabel('Actuals', fontsize=18)
-# # plt.title('Confusion Matrix', fontsize=18)
-# # plt.show()
 
-# from sklearn.metrics import classification_report,accuracy_score,precision_recall_fscore_support
-# ##for classification report containing precision, f1 score and recall for each class
-# # print(classification_report(aaa,result))
-# # print(classification_report(aaa,predictions))
 
+from sklearn.metrics import classification_report,accuracy_score,precision_recall_fscore_support
 # ##for classification accuracy
 
-# print("Accuracy for thresholding method:",accuracy_score(aaa,result)*100)
+print("Accuracy for thresholding method:",accuracy_score(aaa,result)*100)
 # print("Accuracy for knn method:",accuracy_score(aaa,predictions)*100)
 
 # ###for finding precision, recall and fscore
-# print("Report for thresholding:",precision_recall_fscore_support(aaa,result, average='macro'))
+print("Report for thresholding:",precision_recall_fscore_support(aaa,result, average='macro'))
 # print("Report for knn:",precision_recall_fscore_support(aaa,predictions, average='macro'))
-
-# # from pycm import *
-# # cm = ConfusionMatrix(actual_vector=aaa, predict_vector=result)
-# # cm.print_matrix()
-# # cm.stat(summary=True)
