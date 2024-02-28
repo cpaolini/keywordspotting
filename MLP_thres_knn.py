@@ -7,7 +7,9 @@
 #Case - 2: Use X_train and Y_train from the code as the training dataset and 
 #          use X_test and Y_test with X_test_5_files_each_class.npy and Y_test_5_files_each_class.npy as the testing dataset
 #Case - 3: Use X_train and Y_train from the code as the training dataset and 
-#          use X_test and Y_test with X_rhyming_word.npy and Y_rhyming_word.npy as the testing dataset         
+#          use X_test and Y_test with X_rhyming_word.npy and Y_rhyming_word.npy as the testing dataset
+
+#This code also has the portion for KNN. Please ignore that portion for now.
 
 seed_value= 0
 
@@ -311,8 +313,6 @@ cm = confusion_matrix(aaa,result)
 # cm1 = confusion_matrix(aaa,predictions)
 print(cm)
 # print(cm1)
-
-
 
 from sklearn.metrics import classification_report,accuracy_score,precision_recall_fscore_support
 # ##for classification accuracy
