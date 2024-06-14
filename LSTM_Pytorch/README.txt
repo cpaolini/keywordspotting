@@ -13,7 +13,7 @@ This repository contains scripts for inspecting and quantizing an LSTM model usi
 
 ```
 workspace/NewModel
-├── base.py
+├── base_model.py
 ├── inspection.py
 ├── quantization.py
 ├── X.npy
@@ -38,10 +38,10 @@ workspace/NewModel
 
 ### Training the LSTM Model
 
-Run `base.py` to train the LSTM model and save the trained model as `trained_lstm_model.pth`.
+Run `base_model.py` to train the LSTM model and save the trained model as `trained_lstm_model.pth`.
 
 ```sh
-python base.py
+python base_model.py
 ```
 
 ### Inspecting the Model
@@ -80,7 +80,7 @@ python quantization.py --model_path /workspace/LSTM_Pytorch/trained_lstm_model.p
 
 ## Files
 
-- `base.py`: Script for training the LSTM model.
+- `base_model.py`: Script for training the LSTM model.
 - `inspection.py`: Script for inspecting the trained LSTM model.
 - `quantization.py`: Script for quantizing the LSTM model.
 - `X.npy`: Input data for training.
