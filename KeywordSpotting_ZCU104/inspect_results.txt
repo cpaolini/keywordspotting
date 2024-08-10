@@ -1,0 +1,283 @@
+[MODEL INFO]:
+________________________________________________________________________________________________________________________
+Model Name: model
+________________________________________________________________________________________________________________________
+ID          Name                    Type                    Device      Notes                                           
+========================================================================================================================
+0/10        input_1                 InputLayer              INPUT                                                       
+------------------------------------------------------------------------------------------------------------------------
+1/10        conv2d                  Conv2D<linear>          DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+2/10        batch_normalization     BatchNormalization      DPU         Folded into previous layer conv2d               
+------------------------------------------------------------------------------------------------------------------------
+3/10        relu                    ReLU                    DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+4/10        conv2d_1                Conv2D<linear>          DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+5/10        batch_normalization_1   BatchNormalization      DPU         Folded into previous layer conv2d_1             
+------------------------------------------------------------------------------------------------------------------------
+6/10        max_pooling2d           MaxPooling2D            DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+7/10        conv2d_3                Conv2D<linear>          DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+8/10        max_pooling2d_1         MaxPooling2D            DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+9/10        flatten                 Flatten                 DPU                                                         
+------------------------------------------------------------------------------------------------------------------------
+10/10       dense                   Dense<sigmoid>          CPU+DPU     xir::Op{name =                                  
+                                                                        quant_dense(TransferMatMulToConv2d), type =     
+                                                                        conv2d-fix} has been assigned to CPU:           
+                                                                        [Weights(5, 8, 8, 748) is too large to be loaded
+                                                                        into parameter buffer. "kernel_h * kernel_w *   
+                                                                        kernel_d(=1 for conv2d) * ⌈input_channel /      
+                                                                        weights_bank_width⌉ * ⌈output_channel_parallel /
+                                                                        weights_bank_num⌉"(3008) is supposed to be less 
+                                                                        equal than 2048]; Seperate layer activation     
+                                                                        `sigmoid`; Convert activation `sigmoid` to      
+                                                                        VitisSigmoid                                    
+------------------------------------------------------------------------------------------------------------------------
+========================================================================================================================
+[SUMMARY INFO]:
+- [Target Name]: DPUCZDX8G_ISA1_B4096
+- [Total Layers]: 11
+- [Layer Types]: InputLayer(1) Conv2D<linear>(3) BatchNormalization(2) ReLU(1) MaxPooling2D(2) Flatten(1) Dense<sigmoid>(1) 
+- [Partition Results]: INPUT(1) DPU(9) CPU+DPU(1) 
+========================================================================================================================
+[NOTES INFO]:
+- [2/10] Layer batch_normalization (Type:BatchNormalization, Device:DPU):
+    * Folded into previous layer conv2d
+- [5/10] Layer batch_normalization_1 (Type:BatchNormalization, Device:DPU):
+    * Folded into previous layer conv2d_1
+- [10/10] Layer dense (Type:Dense<sigmoid>, Device:CPU+DPU):
+    * xir::Op{name = quant_dense(TransferMatMulToConv2d), type = conv2d-fix} has been assigned to CPU: [Weights(5, 8, 8, 748) is too large to be loaded into parameter buffer. "kernel_h * kernel_w * kernel_d(=1 for conv2d) * ⌈input_channel / weights_bank_width⌉ * ⌈output_channel_parallel / weights_bank_num⌉"(3008) is supposed to be less equal than 2048]
+    * Seperate layer activation `sigmoid`
+    * Convert activation `sigmoid` to VitisSigmoid
+========================================================================================================================
+
+Detailed Model Info: 
+
+Layer ID: 0
+Layer Name: input_1
+Layer Type: InputLayer
+Device: INPUT
+Notes: 
+    None
+Layer Config:
+{'batch_input_shape': (None, 193, 87, 1),
+ 'dtype': 'float32',
+ 'name': 'input_1',
+ 'ragged': False,
+ 'sparse': False}
+________________________________________________________________________________________________________________________
+Layer ID: 1
+Layer Name: conv2d
+Layer Type: Conv2D
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'activation': 'linear',
+ 'activity_regularizer': None,
+ 'bias_constraint': None,
+ 'bias_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'bias_regularizer': None,
+ 'data_format': 'channels_last',
+ 'dilation_rate': (1, 1),
+ 'dtype': 'float32',
+ 'filters': 32,
+ 'groups': 1,
+ 'kernel_constraint': None,
+ 'kernel_initializer': {'class_name': 'GlorotUniform',
+                        'config': {'seed': None}},
+ 'kernel_regularizer': None,
+ 'kernel_size': (7, 7),
+ 'name': 'conv2d',
+ 'padding': 'valid',
+ 'strides': (1, 1),
+ 'trainable': True,
+ 'use_bias': True}
+________________________________________________________________________________________________________________________
+Layer ID: 2
+Layer Name: batch_normalization
+Layer Type: BatchNormalization
+Device: DPU
+Notes: 
+    1. Folded into previous layer conv2d.
+Layer Config:
+{'axis': ListWrapper([3]),
+ 'beta_constraint': None,
+ 'beta_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'beta_regularizer': None,
+ 'center': True,
+ 'dtype': 'float32',
+ 'epsilon': 0.001,
+ 'gamma_constraint': None,
+ 'gamma_initializer': {'class_name': 'Ones', 'config': {}},
+ 'gamma_regularizer': None,
+ 'momentum': 0.99,
+ 'moving_mean_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'moving_variance_initializer': {'class_name': 'Ones', 'config': {}},
+ 'name': 'batch_normalization',
+ 'scale': True,
+ 'trainable': True}
+________________________________________________________________________________________________________________________
+Layer ID: 3
+Layer Name: relu
+Layer Type: ReLU
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'dtype': 'float32',
+ 'max_value': None,
+ 'name': 'relu',
+ 'negative_slope': array(0., dtype=float32),
+ 'threshold': array(0., dtype=float32),
+ 'trainable': True}
+________________________________________________________________________________________________________________________
+Layer ID: 4
+Layer Name: conv2d_1
+Layer Type: Conv2D
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'activation': 'linear',
+ 'activity_regularizer': None,
+ 'bias_constraint': None,
+ 'bias_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'bias_regularizer': None,
+ 'data_format': 'channels_last',
+ 'dilation_rate': (1, 1),
+ 'dtype': 'float32',
+ 'filters': 32,
+ 'groups': 1,
+ 'kernel_constraint': None,
+ 'kernel_initializer': {'class_name': 'GlorotUniform',
+                        'config': {'seed': None}},
+ 'kernel_regularizer': None,
+ 'kernel_size': (7, 7),
+ 'name': 'conv2d_1',
+ 'padding': 'valid',
+ 'strides': (1, 1),
+ 'trainable': True,
+ 'use_bias': True}
+________________________________________________________________________________________________________________________
+Layer ID: 5
+Layer Name: batch_normalization_1
+Layer Type: BatchNormalization
+Device: DPU
+Notes: 
+    1. Folded into previous layer conv2d_1.
+Layer Config:
+{'axis': ListWrapper([3]),
+ 'beta_constraint': None,
+ 'beta_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'beta_regularizer': None,
+ 'center': True,
+ 'dtype': 'float32',
+ 'epsilon': 0.001,
+ 'gamma_constraint': None,
+ 'gamma_initializer': {'class_name': 'Ones', 'config': {}},
+ 'gamma_regularizer': None,
+ 'momentum': 0.99,
+ 'moving_mean_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'moving_variance_initializer': {'class_name': 'Ones', 'config': {}},
+ 'name': 'batch_normalization_1',
+ 'scale': True,
+ 'trainable': True}
+________________________________________________________________________________________________________________________
+Layer ID: 6
+Layer Name: max_pooling2d
+Layer Type: MaxPooling2D
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'data_format': 'channels_last',
+ 'dtype': 'float32',
+ 'name': 'max_pooling2d',
+ 'padding': 'valid',
+ 'pool_size': (2, 2),
+ 'strides': (2, 2),
+ 'trainable': True}
+________________________________________________________________________________________________________________________
+Layer ID: 7
+Layer Name: conv2d_3
+Layer Type: Conv2D
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'activation': 'linear',
+ 'activity_regularizer': None,
+ 'bias_constraint': None,
+ 'bias_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'bias_regularizer': None,
+ 'data_format': 'channels_last',
+ 'dilation_rate': (1, 1),
+ 'dtype': 'float32',
+ 'filters': 64,
+ 'groups': 1,
+ 'kernel_constraint': None,
+ 'kernel_initializer': {'class_name': 'GlorotUniform',
+                        'config': {'seed': None}},
+ 'kernel_regularizer': None,
+ 'kernel_size': (3, 3),
+ 'name': 'conv2d_3',
+ 'padding': 'valid',
+ 'strides': (1, 1),
+ 'trainable': True,
+ 'use_bias': True}
+________________________________________________________________________________________________________________________
+Layer ID: 8
+Layer Name: max_pooling2d_1
+Layer Type: MaxPooling2D
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'data_format': 'channels_last',
+ 'dtype': 'float32',
+ 'name': 'max_pooling2d_1',
+ 'padding': 'valid',
+ 'pool_size': (2, 2),
+ 'strides': (2, 2),
+ 'trainable': True}
+________________________________________________________________________________________________________________________
+Layer ID: 9
+Layer Name: flatten
+Layer Type: Flatten
+Device: DPU
+Notes: 
+    None
+Layer Config:
+{'data_format': 'channels_last',
+ 'dtype': 'float32',
+ 'name': 'flatten',
+ 'trainable': True}
+________________________________________________________________________________________________________________________
+Layer ID: 10
+Layer Name: dense
+Layer Type: Dense
+Device: CPU+DPU
+Notes: 
+    1. xir::Op{name = quant_dense(TransferMatMulToConv2d), type = conv2d-fix} has been assigned to CPU: [Weights(5, 8, 8, 748) is too large to be loaded into parameter buffer. "kernel_h * kernel_w * kernel_d(=1 for conv2d) * ⌈input_channel / weights_bank_width⌉ * ⌈output_channel_parallel / weights_bank_num⌉"(3008) is supposed to be less equal than 2048].
+    2. Seperate layer activation `sigmoid`.
+    3. Convert activation `sigmoid` to VitisSigmoid.
+Layer Config:
+{'activation': 'sigmoid',
+ 'activity_regularizer': None,
+ 'bias_constraint': None,
+ 'bias_initializer': {'class_name': 'Zeros', 'config': {}},
+ 'bias_regularizer': None,
+ 'dtype': 'float32',
+ 'kernel_constraint': None,
+ 'kernel_initializer': {'class_name': 'GlorotUniform',
+                        'config': {'seed': None}},
+ 'kernel_regularizer': None,
+ 'name': 'dense',
+ 'trainable': True,
+ 'units': 5,
+ 'use_bias': True}
+________________________________________________________________________________________________________________________

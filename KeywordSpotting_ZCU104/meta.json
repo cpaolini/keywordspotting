@@ -1,0 +1,9 @@
+{
+    "lib": "libvart-dpu-runner.so",
+    "filename": "xmodel.xmodel",
+    "kernel": [
+        "subgraph_quant_conv2d",
+        "subgraph_quant_dense(TransferMatMulToConv2d)"
+    ],
+    "target": "DPUCZDX8G_ISA1_B4096"
+}
